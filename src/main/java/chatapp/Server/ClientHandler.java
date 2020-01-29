@@ -33,7 +33,7 @@ public class ClientHandler implements Runnable {
                 received = din.readUTF(); 
                 System.out.println(received); 
 
-                if(received.equals("exit")){
+                if(received.equals("exit") || received == null){
                     this.close();
                     break;
                 }

@@ -12,21 +12,20 @@ public class Server {
 
     private int port;
     private int clientCount;
-    
+
     private ServerSocket serverSocket;
     private Socket socket;
-    
+
     private DataInputStream din;
     private DataOutputStream dout;
 
     public static Vector<ClientHandler> activeClients;
 
-
-    public Server(){
+    public Server() {
         this(DEFAULT_PORT);
     }
 
-    public Server(int port){
+    public Server(int port) {
 
         this.clientCount = 0;
         activeClients = new Vector<>();
@@ -34,28 +33,28 @@ public class Server {
         try {
             serverSocket = new ServerSocket(this.port);
         } catch (Exception e) {
-            System.out.println("Error Starting Server : "+e.getMessage());
+            System.out.println("Error Starting Server : " + e.getMessage());
             System.exit(1);
         }
     }
 
-    public void listen() throws IOException{
+    public void listen() throws IOException {
 
-        System.out.println("Server Started at "+this.port);
-        
-        socket  = serverSocket.accept();
-        System.out.println("Client Joined: "+socket.getInetAddress());
+        System.out.println("Server Started at " + this.port);
+        while (true) {
+            socket = serverSocket.accept();
+            System.out.println("Client Joined: " + socket.getInetAddress());
 
-        clientCount++;
+            clientCount++;
 
-        dout = new DataOutputStream(socket.getOutputStream());
-        din  = new DataInputStream(socket.getInputStream());
+            dout = new DataOutputStream(socket.getOutputStream());
+            din = new DataInputStream(socket.getInputStream());
 
-        ClientHandler newClient = new ClientHandler(clientCount, socket, din, dout);
-        activeClients.add(newClient);
+            ClientHandler newClient = new ClientHandler(clientCount, socket, din, dout);
+            activeClients.add(newClient);
 
-        Thread clientThread = new Thread(newClient);
-        clientThread.start();
+            Thread clientThread = new Thread(newClient);
+            clientThread.start();
+        }
     }
-
 }

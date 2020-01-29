@@ -42,3 +42,8 @@ application {
     // Define the main class for the application.
     mainClassName = 'chatapp.App'
 }
+
+task runServer(type: JavaExec){
+    main = 'chatapp.Server.Server'
+    classpath = sourceSets.main.runtimeClasspath
+}
