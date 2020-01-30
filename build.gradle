@@ -34,13 +34,13 @@ dependencies {
 
 javafx {
     version = "11.0.2"
-    modules = [ 'javafx.controls' ]
+    modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 
 application {
     // Define the main class for the application.
-    mainClassName = 'chatapp.App'
+    mainClassName = 'chatapp.UI.Main'
 }
 
 task runServer(type: JavaExec){
