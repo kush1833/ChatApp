@@ -1,4 +1,4 @@
-package chatapp.Client;
+package chatapp.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -82,4 +82,17 @@ public class Client {
             } 
         }).start(); 
     }
+
+    public static void main(String[] args) {
+        Client client1 = new Client("localhost",3050);
+        Client client2 = new Client("localhost",3050);
+           
+        client1.start();
+        client2.start(); 
+
+        client1.readMessage();
+        client2.readMessage();
+
+    }
+
 }

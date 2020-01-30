@@ -43,7 +43,7 @@ application {
     mainClassName = 'chatapp.Main'
 }
 
-task runServer(type: JavaExec){
-    main = 'chatapp.Server.Server'
+task runClient(type: JavaExec){
+    main = 'chatapp.client.Client'
     classpath = sourceSets.main.runtimeClasspath
 }

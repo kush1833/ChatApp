@@ -1,10 +1,12 @@
-package chatapp.Server;
+package chatapp.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.Vector;
+
+import chatapp.interfaces.ClientListener;
 
 public class Server {
 
@@ -15,6 +17,7 @@ public class Server {
 
     private ServerSocket serverSocket;
     private Socket socket;
+    private ClientListener listener;
 
     private DataInputStream din;
     private DataOutputStream dout;
@@ -38,6 +41,14 @@ public class Server {
         }
     }
 
+    public void attachClientListener(ClientListener listener){
+        this.listener = listener;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
     public void listen() throws IOException {
 
         System.out.println("Server Started at " + this.port);
@@ -55,6 +66,22 @@ public class Server {
 
             Thread clientThread = new Thread(newClient);
             clientThread.start();
+            listener.update(newClient.id);
         }
     }
+
+    public void stop(){
+        
+        activeClients.clear();
+        this.clientCount = 0;
+        try{
+            this.din.close();
+            this.dout.close();
+            this.socket = null;
+            this.serverSocket.close();
+        }catch(IOException e){
+            System.err.println("Error Closing Server");
+        }
+    }
+
 }

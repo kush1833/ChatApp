@@ -1,4 +1,4 @@
-package chatapp.UI;
+package chatapp.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

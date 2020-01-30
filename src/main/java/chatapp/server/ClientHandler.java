@@ -1,4 +1,4 @@
-package chatapp.Server;
+package chatapp.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -31,9 +31,11 @@ public class ClientHandler implements Runnable {
             { 
                 // receive the string 
                 received = din.readUTF(); 
-                System.out.println(received); 
 
-                if(received.equals("exit") || received == null){
+                if(received != null)
+                    System.out.println(received); 
+
+                if(received.equals("exit")){
                     this.close();
                     break;
                 }
@@ -46,7 +48,7 @@ public class ClientHandler implements Runnable {
                    } 
                 }
             }catch(IOException e){
-                System.err.println(e.getMessage());
+                System.err.println("Error: "+e.getMessage());
             }   
         }   
     }
