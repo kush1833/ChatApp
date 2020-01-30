@@ -40,7 +40,7 @@ javafx {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'chatapp.UI.Main'
+    mainClassName = 'chatapp.Main'
 }
 
 task runServer(type: JavaExec){

@@ -5,8 +5,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapp.UI.controllers.MainController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="676.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapp.UI.controllers.AppController">
    <children>
       <Button fx:id="btnStartServer" layoutX="409.0" layoutY="90.0" mnemonicParsing="false" onMouseClicked="#startServer" prefHeight="40.0" prefWidth="131.0" text="Start Server" />
       <TextField fx:id="textPort" layoutX="54.0" layoutY="112.0" prefHeight="26.0" prefWidth="151.0" />
