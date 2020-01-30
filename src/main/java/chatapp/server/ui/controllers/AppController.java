@@ -1,9 +1,10 @@
-package chatapp.ui.controllers;
+package chatapp.server.ui.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import chatapp.server.ClientHandler;
+import chatapp.server.ClientListener;
 import chatapp.server.Server;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +14,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-import chatapp.interfaces.*;
 
 
 public class AppController implements Initializable, ClientListener {

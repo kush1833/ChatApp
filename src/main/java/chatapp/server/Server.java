@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.*;
 import java.util.Vector;
 
-import chatapp.interfaces.ClientListener;
 
 public class Server {
 

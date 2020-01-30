@@ -1,4 +1,4 @@
-package chatapp.ui;
+package chatapp.server.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/app.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/serverApp.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
