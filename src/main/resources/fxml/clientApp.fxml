@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="rootWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapp.client.ui.controllers.ClientAppController">
+   <children>
+      <AnchorPane layoutX="21.0" layoutY="215.0" prefHeight="209.0" prefWidth="464.0">
+         <children>
+            <TextField fx:id="textUsername" layoutX="26.0" layoutY="43.0" prefHeight="43.0" prefWidth="412.0">
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </TextField>
+            <Label layoutX="27.0" layoutY="7.0" prefHeight="36.0" prefWidth="412.0" text="Enter Username :">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </Label>
+            <Button fx:id="btnStart" layoutX="128.0" layoutY="105.0" mnemonicParsing="false" onMouseClicked="#startClientHandler" prefHeight="43.0" prefWidth="209.0" style="-fx-background-color: cyan;" text="Start" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

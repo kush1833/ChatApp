@@ -12,6 +12,7 @@ public class Client {
     private int serverPort;
     private InetAddress inetAddress;
 
+    private String username;
 
     private Socket socket;
     private DataInputStream din;
@@ -33,19 +34,10 @@ public class Client {
     }
 
 
-    public void start() {
 
-        try{
-            socket = new Socket(inetAddress, serverPort);
-            din = new DataInputStream(socket.getInputStream()); 
-            dout = new DataOutputStream(socket.getOutputStream()); 
-
-            System.out.println("Client Started.");
-        }catch(IOException e){
-            System.err.println(e.getMessage());
-        }
+    public void setUsername(String username){
+        this.username = username;
     }
-
 
     public void sendMessage(String message){
 
@@ -83,16 +75,17 @@ public class Client {
         }).start(); 
     }
 
-    public static void main(String[] args) {
-        Client client1 = new Client("localhost",3050);
-        Client client2 = new Client("localhost",3050);
-           
-        client1.start();
-        client2.start(); 
+    public void start() {
 
-        client1.readMessage();
-        client2.readMessage();
+        try{
+            socket = new Socket(inetAddress, serverPort);
+            din = new DataInputStream(socket.getInputStream()); 
+            dout = new DataOutputStream(socket.getOutputStream()); 
 
+            System.out.println("Client Started.");
+        }catch(IOException e){
+            System.err.println(e.getMessage());
+        }
     }
-
+    
 }

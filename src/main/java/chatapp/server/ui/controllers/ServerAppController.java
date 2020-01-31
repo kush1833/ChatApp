@@ -16,7 +16,7 @@ import javafx.scene.input.MouseEvent;
 
 
 
-public class AppController implements Initializable, ClientListener {
+public class ServerAppController implements Initializable, ClientListener {
 
     @FXML
     Label label;
