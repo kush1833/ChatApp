@@ -2,7 +2,9 @@ package chatapp.server;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.Vector;
+import java.util.HashMap;
+import java.util.Map;
+
 
 
 public class Server {
@@ -10,13 +12,14 @@ public class Server {
     private static final int DEFAULT_PORT = 3050;
 
     private int port;
+    @SuppressWarnings("unused")
     private int clientCount;
 
     private ServerSocket serverSocket;
     private Socket socket;
     private ClientListener listener;
 
-    public static Vector<ClientHandler> activeClients;
+    public  Map<String, ClientHandler> activeClients;
 
     public Server() {
         this(DEFAULT_PORT);
@@ -25,7 +28,7 @@ public class Server {
     public Server(int port) {
 
         this.clientCount = 0;
-        activeClients = new Vector<>();
+        activeClients = new HashMap<>();
         this.port = port;
         try {
             serverSocket = new ServerSocket(this.port);
@@ -43,8 +46,18 @@ public class Server {
         return this.port;
     }
 
-    public void updateClient(String id){
-        this.listener.update(id);
+    // public void updateClient(String id){
+    //     this.listener.update(id);
+    // }
+    public void addClient(ClientHandler client){
+        
+        String un = client.getUsername();
+        this.activeClients.put(un,client);
+        this.listener.update(un);
+    }
+
+    public ClientHandler getClient(String un){
+        return this.activeClients.get(un);
     }
 
 
@@ -57,7 +70,6 @@ public class Server {
 
             this.clientCount++;
             ClientHandler newClient = new ClientHandler(this, socket);
-            activeClients.add(newClient);
             Thread clientThread = new Thread(newClient);
             clientThread.start();
         }

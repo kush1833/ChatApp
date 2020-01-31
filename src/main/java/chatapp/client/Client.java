@@ -47,6 +47,9 @@ public class Client {
         this.username = username;
     }
 
+    public String getUsername(){
+        return this.username;
+    }
 
     public void sendMessage(Message message){
 

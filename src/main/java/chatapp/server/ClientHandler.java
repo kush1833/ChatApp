@@ -27,26 +27,38 @@ public class ClientHandler implements Runnable {
         this.din = new ObjectInputStream(socket.getInputStream());
     }
 
-  
+    public String getUsername(){
+        return this.username;
+    }
 
 
     @Override
     public void run() {
         
-        Message received;
+        Message message;
         while (true)  
         { 
             try
             { 
                 // receive the string 
-                received = (Message) din.readObject();
-                System.out.println(received.getSender()+" :"+received.getData());
+                message = (Message) din.readObject();
                 
-                if(!this.isConnected && received.getReceiver().equals("server")){
+                System.out.println(message.getSender()+" :"+message.getData());
+                
+                if(!this.isConnected && message.getReceiver().equals("server")){
                     this.isConnected = true;
-                    this.username = received.getSender();
-                    context.updateClient(this.username);
+                    this.username = message.getSender();
+                    context.addClient(this);
                     this.sendMessage(new Message("server",this.username,"hello"));
+                }else{
+
+                    if(message.isMultiReceiver()){
+                        for(String un : message.getReceivers()){
+                            context.getClient(un).sendMessage(message);
+                        }
+                    }else{
+                        context.getClient(message.getReceiver()).sendMessage(message);
+                    }
                 }
 
             }catch(IOException e){

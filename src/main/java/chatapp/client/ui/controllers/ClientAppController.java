@@ -1,5 +1,6 @@
 package chatapp.client.ui.controllers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +11,15 @@ import chatapp.client.Client;
 import chatapp.client.ReceiveMessageListener;
 import chatapp.message.Message;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 
 public class ClientAppController implements Initializable, ReceiveMessageListener {
 
@@ -38,7 +43,6 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
     TextField textUsernameToChat;
 
     private Client client;
-    private List<String> chatUsernames;
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
@@ -56,23 +60,38 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
 
         String userString = textUsernameToChat.getText();
         StringTokenizer users = new StringTokenizer(userString);
-        chatUsernames = new ArrayList<String>();
+        List<String> chatUsernames = new ArrayList<String>();
         while (users.hasMoreTokens()) {
             chatUsernames.add(users.nextToken());
-
         }
-        System.out.println(chatUsernames.toString());
 
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientChat.fxml"));
+            Parent root =(Parent)loader.load();
+            ClientChatController controller = loader.getController();
+            controller.initReceiverList(chatUsernames, userString);
+            Stage stage = new Stage();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+        textUsernameToChat.setText("");
     }
+
+ 
 
     @Override
     public void onComplete(Message message) {
 
         // Check for Hello Message
-        if(message.getSender().equals("server") && message.getData().equals("hello")){
+        if (message.getSender().equals("server") && message.getData().equals("hello")) {
             System.out.println("Handshake Done");
             anchorPane1.setVisible(false);
             anchorPane2.setVisible(true);
+        }else{
+            
         }
     }
 }
