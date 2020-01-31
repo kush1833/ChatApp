@@ -5,10 +5,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="rootWindow" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="737.0" prefWidth="510.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="chatapp.client.ui.controllers.ClientAppController">
    <children>
-      <AnchorPane layoutX="21.0" layoutY="215.0" prefHeight="209.0" prefWidth="464.0">
+      <AnchorPane fx:id="anchorPane1" layoutX="21.0" layoutY="215.0" prefHeight="209.0" prefWidth="464.0">
          <children>
             <TextField fx:id="textUsername" layoutX="26.0" layoutY="43.0" prefHeight="43.0" prefWidth="412.0">
                <padding>
@@ -24,6 +25,18 @@
                </padding>
             </Label>
             <Button fx:id="btnStart" layoutX="128.0" layoutY="105.0" mnemonicParsing="false" onMouseClicked="#startClientHandler" prefHeight="43.0" prefWidth="209.0" style="-fx-background-color: cyan;" text="Start" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="anchorPane2" prefHeight="737.0" prefWidth="510.0" visible="false">
+         <children>
+            <TextField fx:id="textUsernameToChat" layoutX="71.0" layoutY="182.0" prefHeight="43.0" prefWidth="385.0" />
+            <Label layoutX="71.0" layoutY="146.0" prefHeight="36.0" prefWidth="385.0" text="Enter username(s) to chat :" />
+            <Button fx:id="btnStartChat" layoutX="200.0" layoutY="252.0" mnemonicParsing="false" onMouseClicked="#startChatHandler" prefHeight="43.0" prefWidth="110.0" text="Start" />
+            <Label fx:id="labelInfo" layoutX="71.0" layoutY="369.0" prefHeight="111.0" prefWidth="385.0" textAlignment="CENTER">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

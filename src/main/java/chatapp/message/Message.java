@@ -1,18 +1,26 @@
 package chatapp.message;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Message implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
     private String sender;
-    private String reciever;
+    private List<String> receiverList;
+    private String receiver; 
     private String data;
 
-    public Message(String sender,String reciever,String data) {
+    public Message(String sender, List<String> receiver,String data) {
         this.sender = sender;
-        this.reciever = reciever;
+        this.receiverList = receiver;
+        this.data = data;
+    }
+
+    public Message(String sender, String receiver,String data) {
+        this.sender = sender;
+        this.receiver = receiver;
         this.data = data;
     }
 
@@ -20,8 +28,12 @@ public class Message implements Serializable{
         return this.sender;
     }
 
-    public String getReciever(){
-        return this.reciever;
+    public List<String> getReceivers(){
+        return this.receiverList;
+    }
+
+    public String getReceiver(){
+        return this.receiver;
     }
 
     public String getData(){

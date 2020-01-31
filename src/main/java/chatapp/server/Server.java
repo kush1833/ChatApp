@@ -1,7 +1,5 @@
 package chatapp.server;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.util.Vector;
@@ -17,9 +15,6 @@ public class Server {
     private ServerSocket serverSocket;
     private Socket socket;
     private ClientListener listener;
-
-    private DataInputStream din;
-    private DataOutputStream dout;
 
     public static Vector<ClientHandler> activeClients;
 
@@ -48,6 +43,10 @@ public class Server {
         return this.port;
     }
 
+    public void updateActiveClients(String username){
+        this.listener.update(username);
+    }
+
     public void listen() throws IOException {
 
         System.out.println("Server Started at " + this.port);
@@ -55,27 +54,21 @@ public class Server {
             socket = serverSocket.accept();
             System.out.println("Client Joined: " + socket.getInetAddress());
 
-            clientCount++;
-
-            dout = new DataOutputStream(socket.getOutputStream());
-            din = new DataInputStream(socket.getInputStream());
-
-            ClientHandler newClient = new ClientHandler(clientCount, socket, din, dout);
+            this.clientCount++;
+            ClientHandler newClient = new ClientHandler(this, socket);
             activeClients.add(newClient);
 
             Thread clientThread = new Thread(newClient);
             clientThread.start();
-            listener.update(newClient.id);
         }
     }
+
 
     public void stop(){
         
         activeClients.clear();
         this.clientCount = 0;
         try{
-            this.din.close();
-            this.dout.close();
             this.socket = null;
             this.serverSocket.close();
         }catch(IOException e){

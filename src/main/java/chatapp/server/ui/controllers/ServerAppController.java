@@ -3,7 +3,6 @@ package chatapp.server.ui.controllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import chatapp.server.ClientHandler;
 import chatapp.server.ClientListener;
 import chatapp.server.Server;
 import javafx.fxml.FXML;
@@ -23,7 +22,7 @@ public class ServerAppController implements Initializable, ClientListener {
     @FXML
     Button btnStartStopServer;
     @FXML
-    ListView<Integer> listActiveClients;
+    ListView<String> listActiveClients;
     @FXML TextField textPort;
 
 
@@ -35,9 +34,6 @@ public class ServerAppController implements Initializable, ClientListener {
         server = new Server();
         serverStatus = false;
         textPort.appendText(String.valueOf(server.getPort()));
-        for(ClientHandler client : Server.activeClients){
-            listActiveClients.getItems().add(client.id);
-        }
         server.attachClientListener(this);
     }
 
@@ -69,7 +65,8 @@ public class ServerAppController implements Initializable, ClientListener {
     }
 
     @Override
-    public void update(int id) {
+    public void update(String id) {
+        System.out.println(id);
         listActiveClients.getItems().add(id);
     }
 

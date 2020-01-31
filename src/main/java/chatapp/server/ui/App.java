@@ -16,7 +16,7 @@ public class App extends Application {
         stage.show();
     }
 
-    public void render(String args[]){
+    public static void render(String args[]){
         launch(args);
     }
 }
