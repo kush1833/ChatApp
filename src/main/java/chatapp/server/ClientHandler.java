@@ -27,6 +27,9 @@ public class ClientHandler implements Runnable {
         this.din = new ObjectInputStream(socket.getInputStream());
     }
 
+  
+
+
     @Override
     public void run() {
         
@@ -42,7 +45,7 @@ public class ClientHandler implements Runnable {
                 if(!this.isConnected && received.getReceiver().equals("server")){
                     this.isConnected = true;
                     this.username = received.getSender();
-                    context.updateActiveClients(this.username);
+                    context.updateClient(this.username);
                     this.sendMessage(new Message("server",this.username,"hello"));
                 }
 
@@ -55,7 +58,6 @@ public class ClientHandler implements Runnable {
             } 
         }   
     }
-
 
 
     public void sendMessage(Message message){

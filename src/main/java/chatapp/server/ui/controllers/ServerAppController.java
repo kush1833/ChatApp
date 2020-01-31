@@ -1,10 +1,12 @@
 package chatapp.server.ui.controllers;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import chatapp.server.ClientListener;
 import chatapp.server.Server;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -44,19 +46,17 @@ public class ServerAppController implements Initializable, ClientListener {
         if(this.serverStatus){
            btnStartStopServer.setText("Server Started.");
            btnStartStopServer.setDisable(true);
+           new Thread( new Runnable(){
            
-           new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
+               @Override
+               public void run() {
+                   try{
                         server.listen();
-                    } catch (Exception e) {
-                        System.out.println(e);
-                    }
-
-                }
-            }).start();
+                   }catch(IOException e){
+                       e.printStackTrace();
+                   } 
+               }
+           }).start();;
         }
         else{
             btnStartStopServer.setText("Start Server");
@@ -64,10 +64,17 @@ public class ServerAppController implements Initializable, ClientListener {
         }
     }
 
+
     @Override
     public void update(String id) {
         System.out.println(id);
-        listActiveClients.getItems().add(id);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                listActiveClients.getItems().add(id);
+            }
+        });
+        
     }
 
 

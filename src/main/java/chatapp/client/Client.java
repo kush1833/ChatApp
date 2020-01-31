@@ -22,6 +22,8 @@ public class Client {
     private ObjectInputStream din;
     private ObjectOutputStream dout;
     
+    private ReceiveMessageListener listener;
+
 
     public Client(String address, int serverPort){
         this.isConnected = false;
@@ -73,6 +75,7 @@ public class Client {
                     try { 
                         Message message = (Message) din.readObject();
                         System.out.println(message.getSender()+" : "+message.getData());
+                        listener.onComplete(message);
                         if(!isConnected && message.getSender().equals("server")){
                             isConnected = true;
                             System.out.println(isConnected);
@@ -80,12 +83,17 @@ public class Client {
                         
                     } catch (IOException e) { 
                         e.printStackTrace(); 
-                    } catch(ClassNotFoundException cnf){
-
+                    } catch(ClassNotFoundException e){
+                        e.printStackTrace();
                     }
                 } 
             } 
         }).start(); 
+    }
+
+
+    public void attachReceiveMessageListener(ReceiveMessageListener listener){
+        this.listener = listener;
     }
 
     public void start() {
@@ -97,7 +105,7 @@ public class Client {
             this.readMessage();
             Message handshakeMessage = new Message(this.username,"server", "hello");
             this.sendMessage(handshakeMessage);
-            while(!isConnected);
+            //while(!isConnected);
             
             System.out.println("Client Started.");
 

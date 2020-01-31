@@ -43,9 +43,10 @@ public class Server {
         return this.port;
     }
 
-    public void updateActiveClients(String username){
-        this.listener.update(username);
+    public void updateClient(String id){
+        this.listener.update(id);
     }
+
 
     public void listen() throws IOException {
 
@@ -57,7 +58,6 @@ public class Server {
             this.clientCount++;
             ClientHandler newClient = new ClientHandler(this, socket);
             activeClients.add(newClient);
-
             Thread clientThread = new Thread(newClient);
             clientThread.start();
         }
