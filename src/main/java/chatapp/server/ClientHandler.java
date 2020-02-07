@@ -51,6 +51,8 @@ public class ClientHandler implements Runnable {
                     context.addClient(this);
                     this.sendMessage(new Message("server",this.username,"hello"));
                 }else{
+                    
+                    System.out.println(message.getChatId()+" :"+message.isMultiReceiver());
 
                     if(message.isMultiReceiver()){
                         for(String un : message.getReceivers()){

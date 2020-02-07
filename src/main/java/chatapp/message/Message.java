@@ -11,7 +11,8 @@ public class Message implements Serializable{
     private List<String> receiverList;
     private String receiver; 
     private String data;
-  
+    private String chatId;
+
     public Message(String sender, List<String> receiver,String data) {
         this.sender = sender;
         this.receiverList = receiver;
@@ -19,12 +20,26 @@ public class Message implements Serializable{
         this.receiver = null;
     }
 
+    public Message(String chatId, String sender, List<String> receiver,String data) {
+        this.sender = sender;
+        this.receiverList = receiver;
+        this.data = data;
+        this.receiver = null;
+        this.chatId = chatId;
+    }
+
+
     public Message(String sender, String receiver,String data) {
         this.sender = sender;
         this.receiver = receiver;
         this.data = data;
         this.receiverList = null;
     }
+
+    public String getChatId(){
+        return this.chatId;
+    }
+
 
     public String getSender(){
         return this.sender;

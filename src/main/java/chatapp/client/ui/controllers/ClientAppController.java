@@ -3,7 +3,9 @@ package chatapp.client.ui.controllers;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
 
@@ -43,55 +45,86 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
     TextField textUsernameToChat;
 
     private Client client;
+    private Map<String, ClientChatController> controllerMap;
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
         client = new Client("localhost", 3050);
         client.attachReceiveMessageListener(this);
+        controllerMap = new HashMap<>();
     }
 
-    public void startClientHandler(MouseEvent event) {
+    public void startClientHandler(final MouseEvent event) {
         final String username = textUsername.getText();
         client.setUsername(username);
         client.start();
     }
 
-    public void startChatHandler(MouseEvent event) {
+    public void startChatHandler(final MouseEvent event) {
 
-        String userString = textUsernameToChat.getText();
-        StringTokenizer users = new StringTokenizer(userString);
-        List<String> chatUsernames = new ArrayList<String>();
+        final String userString = textUsernameToChat.getText();
+        final StringTokenizer users = new StringTokenizer(userString);
+        final List<String> chatUsernames = new ArrayList<String>();
         while (users.hasMoreTokens()) {
             chatUsernames.add(users.nextToken());
         }
-
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientChat.fxml"));
-            Parent root =(Parent)loader.load();
-            ClientChatController controller = loader.getController();
-            controller.initReceiverList(chatUsernames, userString);
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }catch(IOException e){
-            System.out.println(e.getMessage());
-        }
+        loadNewChatWindow(null, chatUsernames, userString, null);
         textUsernameToChat.setText("");
     }
 
- 
+
+
+    private void loadNewChatWindow(String chatId, List<String> chatUsernames, String userString, String m){
+
+        if(chatId == null)
+            chatId = String.valueOf(System.currentTimeMillis());
+
+        try {
+            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientChat.fxml"));
+            final Parent root = (Parent) loader.load();
+            final ClientChatController controller = loader.getController();
+            controller.initReceiverList(client, chatId, chatUsernames, userString, m);
+            controllerMap.put(chatId, controller);
+            final Stage stage = new Stage();
+            final Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        } catch (final IOException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
     @Override
-    public void onComplete(Message message) {
+    public void onComplete(final Message message) {
+
+        System.out.println(controllerMap.toString());
+
 
         // Check for Hello Message
         if (message.getSender().equals("server") && message.getData().equals("hello")) {
             System.out.println("Handshake Done");
             anchorPane1.setVisible(false);
             anchorPane2.setVisible(true);
-        }else{
-            
+        } else {
+
+            System.out.println(message.toString());
+            String chatId = message.getChatId();
+
+            if (controllerMap.containsKey(chatId)) {
+                controllerMap.get(chatId).updateMessage(message);
+            } else {
+                
+                List<String> chatUsernames = message.getReceivers();
+                chatUsernames.remove(client.getUsername());
+                chatUsernames.add(message.getSender());
+                String userString = "";
+                for(String s: chatUsernames){
+                    userString+=s;
+                }
+                System.out.println(userString);
+                loadNewChatWindow(chatId, chatUsernames, userString, message.getData());
+            }
         }
     }
+
 }
