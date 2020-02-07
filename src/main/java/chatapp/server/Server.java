@@ -54,6 +54,13 @@ public class Server {
         this.listener.update(un);
     }
 
+    public ClientHandler removeClient(ClientHandler client){
+        String un = client.getUsername();
+        this.activeClients.remove(un);
+        this.listener.delete(un);
+        return client;
+    }
+
     public ClientHandler getClient(String un){
         return this.activeClients.get(un);
     }

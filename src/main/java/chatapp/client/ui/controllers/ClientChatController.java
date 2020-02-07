@@ -25,13 +25,9 @@ public class ClientChatController implements Initializable {
 
     private Set<String> receiversSet;
     private Client client;
-    private String initData;
-    private String userString;
 
     public void initReceiverSet(Set<String> receiversSet, String userString, String initData){
         this.receiversSet = receiversSet;
-        this.initData = initData;
-        this.userString = userString;
          if(initData != null)
             listView.getItems().add(initData);
         labelReceiverList.setText(userString);
@@ -46,7 +42,8 @@ public class ClientChatController implements Initializable {
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
-               listView.getItems().add(message.getData());
+               String msg = message.getSender()+" : "+message.getData();
+               listView.getItems().add(msg);
             }     
         });
     }
@@ -60,15 +57,14 @@ public class ClientChatController implements Initializable {
             @Override
             public void run() {
                textMessage.setText("");
-               listView.getItems().add(message.getData());
+               String msg = client.getUsername()+" : "+message.getData();
+               listView.getItems().add(msg);
             }     
         });
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(initData);
-        System.out.println(userString);
         this.client = ClientAppController.getClient();
        
     }

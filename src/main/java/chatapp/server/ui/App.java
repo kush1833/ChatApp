@@ -1,10 +1,13 @@
 package chatapp.server.ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class App extends Application {
 
@@ -14,9 +17,18 @@ public class App extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+        
+            @Override
+            public void handle(WindowEvent event) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
     }
 
-    public static void render(String args[]){
+    public static void main(String args[]){
         launch(args);
     }
 }

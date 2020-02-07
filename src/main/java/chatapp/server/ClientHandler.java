@@ -61,7 +61,11 @@ public class ClientHandler implements Runnable {
                 }
 
             }catch(IOException e){
-                System.err.println("Error: "+e.getMessage());
+                System.err.println("Error: ! "+ e.getLocalizedMessage());
+                if(e.getMessage() == null){
+                    this.close();
+                    this.context.removeClient(this);
+                }
                 break;
             }  
             catch(ClassNotFoundException e){
@@ -87,7 +91,6 @@ public class ClientHandler implements Runnable {
 
     }
 
-    @SuppressWarnings("unused")
     private void close(){
         try{ 
             this.din.close(); 

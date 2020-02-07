@@ -86,6 +86,9 @@ public class Client {
                         
                     } catch (IOException e) { 
                         e.printStackTrace(); 
+                        System.out.println("Client Err: "+e.getMessage());
+                        break;
+                       
                     } catch(ClassNotFoundException e){
                         e.printStackTrace();
                     }

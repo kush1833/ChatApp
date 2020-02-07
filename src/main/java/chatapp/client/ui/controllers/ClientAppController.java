@@ -2,16 +2,16 @@ package chatapp.client.ui.controllers;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import com.google.common.collect.Sets;
+
 
 import chatapp.client.Client;
 import chatapp.client.ReceiveMessageListener;
@@ -59,6 +59,10 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
         controllerMap = new HashMap<>();
     }
 
+    public static Client getClient() {
+        return client;
+    }
+
     public void startClientHandler(final MouseEvent event) {
         final String username = textUsername.getText();
         client.setUsername(username);
@@ -74,12 +78,12 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
             chatUsernames.add(users.nextToken());
         }
         textUsernameToChat.setText("");
-        loadNewChatWindow(chatUsernames, userString, null);
+        loadChatWindow(chatUsernames, userString, null);
     }
 
-    private void loadNewChatWindow(Set<String> receiversSet, String userString, Message message) {
+    private void loadChatWindow(Set<String> receiversSet, String userString, Message message) {
 
-        ClientChatController ccc = chatWindowExists(receiversSet);
+        ClientChatController ccc = getChatWindowController(receiversSet);
 
         if (ccc == null) {
 
@@ -89,7 +93,7 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
                 public void run() {
                     String initData = null;
                     if (message != null)
-                        initData = message.getData();
+                        initData = message.getSender() +" : "+message.getData();
 
                     try {
                         final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientChat.fxml"));
@@ -112,11 +116,8 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
         }
     }
 
-    public static Client getClient() {
-        return client;
-    }
-
-    private ClientChatController chatWindowExists(Set<String> receiversSet) {
+   
+    private ClientChatController getChatWindowController(Set<String> receiversSet) {
 
         Set<String> existingSet;
 
@@ -147,7 +148,7 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
                 userString = userString + s + " ";
             }
             System.out.println(userString);
-            loadNewChatWindow(chatUsernames, userString, message);
+            loadChatWindow(chatUsernames, userString, message);
         }
     }
 }

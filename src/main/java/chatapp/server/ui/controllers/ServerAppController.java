@@ -15,8 +15,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 
-
-
 public class ServerAppController implements Initializable, ClientListener {
 
     @FXML
@@ -25,8 +23,8 @@ public class ServerAppController implements Initializable, ClientListener {
     Button btnStartStopServer;
     @FXML
     ListView<String> listActiveClients;
-    @FXML TextField textPort;
-
+    @FXML
+    TextField textPort;
 
     private Server server;
     private boolean serverStatus;
@@ -43,27 +41,26 @@ public class ServerAppController implements Initializable, ClientListener {
 
         this.serverStatus = !this.serverStatus;
 
-        if(this.serverStatus){
-           btnStartStopServer.setText("Server Started.");
-           btnStartStopServer.setDisable(true);
-           new Thread( new Runnable(){
-           
-               @Override
-               public void run() {
-                   try{
+        if (this.serverStatus) {
+            btnStartStopServer.setText("Server Started.");
+            btnStartStopServer.setDisable(true);
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    try {
                         server.listen();
-                   }catch(IOException e){
-                       e.printStackTrace();
-                   } 
-               }
-           }).start();;
-        }
-        else{
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+            ;
+        } else {
             btnStartStopServer.setText("Start Server");
-            //server.stop();
+            // server.stop();
         }
     }
-
 
     @Override
     public void update(String id) {
@@ -74,8 +71,19 @@ public class ServerAppController implements Initializable, ClientListener {
                 listActiveClients.getItems().add(id);
             }
         });
-        
+
     }
 
+    @Override
+    public void delete(String id) {
+        System.out.println(id);
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                listActiveClients.getItems().remove(id);
+            }
+        });
+
+    }
 
 }
