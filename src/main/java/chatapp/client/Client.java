@@ -109,7 +109,6 @@ public class Client {
             Message handshakeMessage = new Message(this.username,"server", "hello");
             this.sendMessage(handshakeMessage);
             //while(!isConnected);
-            
             System.out.println("Client Started.");
 
         }catch(IOException e){

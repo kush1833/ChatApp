@@ -1,52 +1,39 @@
 package chatapp.message;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 public class Message implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
     private String sender;
-    private List<String> receiverList;
+    private Set<String> receiversSet;
     private String receiver; 
     private String data;
-    private String chatId;
 
-    public Message(String sender, List<String> receiver,String data) {
+    public Message(String sender, Set<String> receivers,String data) {
         this.sender = sender;
-        this.receiverList = receiver;
+        this.receiversSet = receivers;
         this.data = data;
         this.receiver = null;
     }
-
-    public Message(String chatId, String sender, List<String> receiver,String data) {
-        this.sender = sender;
-        this.receiverList = receiver;
-        this.data = data;
-        this.receiver = null;
-        this.chatId = chatId;
-    }
-
 
     public Message(String sender, String receiver,String data) {
         this.sender = sender;
         this.receiver = receiver;
         this.data = data;
-        this.receiverList = null;
+        this.receiversSet = null;
     }
 
-    public String getChatId(){
-        return this.chatId;
-    }
-
+  
 
     public String getSender(){
         return this.sender;
     }
 
-    public List<String> getReceivers(){
-        return this.receiverList;
+    public Set<String> getReceivers(){
+        return this.receiversSet;
     }
 
     public String getReceiver(){

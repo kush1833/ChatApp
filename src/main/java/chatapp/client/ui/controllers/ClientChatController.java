@@ -1,8 +1,8 @@
 package chatapp.client.ui.controllers;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import chatapp.client.Client;
 import chatapp.message.Message;
@@ -23,22 +23,22 @@ public class ClientChatController implements Initializable {
     @FXML TextField textMessage;
     @FXML ListView<String> listView;
 
-    private String chatId;
-    private List<String> receiversList;
+    private Set<String> receiversSet;
     private Client client;
+    private String initData;
+    private String userString;
 
-    public void initReceiverList(Client client, String chatId, List<String> receiverList, String list, String dm){
-        this.chatId = chatId;
-        this.client = client;
-        this.receiversList = receiverList;
-        labelReceiverList.setText(list);
-        if(dm != null){
-            listView.getItems().add(dm);
-        }
+    public void initReceiverSet(Set<String> receiversSet, String userString, String initData){
+        this.receiversSet = receiversSet;
+        this.initData = initData;
+        this.userString = userString;
+         if(initData != null)
+            listView.getItems().add(initData);
+        labelReceiverList.setText(userString);
     }
 
-    public List<String> getReceiversList(){
-        return this.receiversList;
+    public Set<String> getReceiversList(){
+        return this.receiversSet;
     }
 
     public void updateMessage(Message message){
@@ -53,14 +53,23 @@ public class ClientChatController implements Initializable {
 
     public void sendMessageHandler(MouseEvent event){
         String msg = textMessage.getText().trim();
-        Message message = new Message(chatId,client.getUsername(), this.receiversList,msg);
+        Message message = new Message(client.getUsername(), this.receiversSet,msg);
         client.sendMessage(message);
-        textMessage.setText("");
-        listView.getItems().add(msg);
+      
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+               textMessage.setText("");
+               listView.getItems().add(message.getData());
+            }     
+        });
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        System.out.println(initData);
+        System.out.println(userString);
+        this.client = ClientAppController.getClient();
+       
     }
 }

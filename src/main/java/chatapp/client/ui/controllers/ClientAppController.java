@@ -4,14 +4,19 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.StringTokenizer;
+
+import com.google.common.collect.Sets;
 
 import chatapp.client.Client;
 import chatapp.client.ReceiveMessageListener;
 import chatapp.message.Message;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,8 +49,8 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
     @FXML
     TextField textUsernameToChat;
 
-    private Client client;
-    private Map<String, ClientChatController> controllerMap;
+    private static Client client;
+    private Map<ClientChatController, Set<String>> controllerMap;
 
     @Override
     public void initialize(final URL location, final ResourceBundle resources) {
@@ -64,41 +69,68 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
 
         final String userString = textUsernameToChat.getText();
         final StringTokenizer users = new StringTokenizer(userString);
-        final List<String> chatUsernames = new ArrayList<String>();
+        final Set<String> chatUsernames = new HashSet<String>();
         while (users.hasMoreTokens()) {
             chatUsernames.add(users.nextToken());
         }
-        loadNewChatWindow(null, chatUsernames, userString, null);
         textUsernameToChat.setText("");
+        loadNewChatWindow(chatUsernames, userString, null);
     }
 
+    private void loadNewChatWindow(Set<String> receiversSet, String userString, Message message) {
 
+        ClientChatController ccc = chatWindowExists(receiversSet);
 
-    private void loadNewChatWindow(String chatId, List<String> chatUsernames, String userString, String m){
+        if (ccc == null) {
 
-        if(chatId == null)
-            chatId = String.valueOf(System.currentTimeMillis());
+            Platform.runLater(new Runnable() {
 
-        try {
-            final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientChat.fxml"));
-            final Parent root = (Parent) loader.load();
-            final ClientChatController controller = loader.getController();
-            controller.initReceiverList(client, chatId, chatUsernames, userString, m);
-            controllerMap.put(chatId, controller);
-            final Stage stage = new Stage();
-            final Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (final IOException e) {
-            System.out.println(e.getMessage());
+                @Override
+                public void run() {
+                    String initData = null;
+                    if (message != null)
+                        initData = message.getData();
+
+                    try {
+                        final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/clientChat.fxml"));
+                        final Parent root = (Parent) loader.load();
+                        final ClientChatController controller = loader.getController();
+                        controller.initReceiverSet(receiversSet, userString, initData);
+                        controllerMap.put(controller, receiversSet);
+                        final Stage stage = new Stage();
+                        final Scene scene = new Scene(root);
+                        stage.setScene(scene);
+                        stage.show();
+                    } catch (final IOException e) {
+                        System.out.println(e.getMessage());
+                    }
+
+                }
+            });
+        } else {
+            ccc.updateMessage(message);
         }
+    }
+
+    public static Client getClient() {
+        return client;
+    }
+
+    private ClientChatController chatWindowExists(Set<String> receiversSet) {
+
+        Set<String> existingSet;
+
+        for (Map.Entry<ClientChatController, Set<String>> mapEl : controllerMap.entrySet()) {
+            existingSet = (Set<String>) mapEl.getValue();
+            if (receiversSet.equals(existingSet)) {
+                return mapEl.getKey();
+            }
+        }
+        return null;
     }
 
     @Override
     public void onComplete(final Message message) {
-
-        System.out.println(controllerMap.toString());
-
 
         // Check for Hello Message
         if (message.getSender().equals("server") && message.getData().equals("hello")) {
@@ -107,24 +139,15 @@ public class ClientAppController implements Initializable, ReceiveMessageListene
             anchorPane2.setVisible(true);
         } else {
 
-            System.out.println(message.toString());
-            String chatId = message.getChatId();
-
-            if (controllerMap.containsKey(chatId)) {
-                controllerMap.get(chatId).updateMessage(message);
-            } else {
-                
-                List<String> chatUsernames = message.getReceivers();
-                chatUsernames.remove(client.getUsername());
-                chatUsernames.add(message.getSender());
-                String userString = "";
-                for(String s: chatUsernames){
-                    userString+=s;
-                }
-                System.out.println(userString);
-                loadNewChatWindow(chatId, chatUsernames, userString, message.getData());
+            Set<String> chatUsernames = message.getReceivers();
+            chatUsernames.remove(client.getUsername());
+            chatUsernames.add(message.getSender());
+            String userString = "";
+            for (String s : chatUsernames) {
+                userString = userString + s + " ";
             }
+            System.out.println(userString);
+            loadNewChatWindow(chatUsernames, userString, message);
         }
     }
-
 }

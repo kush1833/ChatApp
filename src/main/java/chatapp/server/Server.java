@@ -46,9 +46,7 @@ public class Server {
         return this.port;
     }
 
-    // public void updateClient(String id){
-    //     this.listener.update(id);
-    // }
+
     public void addClient(ClientHandler client){
         
         String un = client.getUsername();

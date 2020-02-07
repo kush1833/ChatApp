@@ -42,7 +42,6 @@ public class ClientHandler implements Runnable {
             { 
                 // receive the string 
                 message = (Message) din.readObject();
-                
                 System.out.println(message.getSender()+" :"+message.getData());
                 
                 if(!this.isConnected && message.getReceiver().equals("server")){
@@ -52,8 +51,6 @@ public class ClientHandler implements Runnable {
                     this.sendMessage(new Message("server",this.username,"hello"));
                 }else{
                     
-                    System.out.println(message.getChatId()+" :"+message.isMultiReceiver());
-
                     if(message.isMultiReceiver()){
                         for(String un : message.getReceivers()){
                             context.getClient(un).sendMessage(message);
