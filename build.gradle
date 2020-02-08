@@ -37,13 +37,13 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
-
 application {
     // Define the main class for the application.
-    mainClassName = 'chatapp.server.ui.App'
+    mainClassName = 'chatapp.ServerLauncher'
 }
 
 task runClient(type: JavaExec){
     classpath = sourceSets.main.runtimeClasspath
-    main = 'chatapp.MainClient'
+    main = 'chatapp.ClientLauncher'
 }
+
