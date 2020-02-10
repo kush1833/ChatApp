@@ -1,48 +1,73 @@
 package chatapp.clientP2P;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+
+import chatapp.message.Message;
 
 public class SocketHandler {
 
     private ServerSocket serverSocket;
     private Socket socket;
 
+    private ObjectOutputStream dout;
+
+
     private int port;
 
-    private Map<Integer, Socket> openSockets;
+    private Map<String, Socket> openSockets;
+    private ClientConnectionListener listener;
 
     public SocketHandler(int port) {
         this.port = port;
         this.openSockets = new HashMap<>();
     }
 
-    private void addSocket(Socket socket) {
 
-        if (!openSockets.containsKey(socket.getPort())) {
+    public void addClientConnectionListener(ClientConnectionListener listener){
+        this.listener = listener;
+    }
+
+
+
+    public void connectSocket(String username, String srcUsername ,int port) {
+
+        try {
+            Socket socket = new Socket("localhost", port);
+            // ConnectionStreams conn = new ConnectionStreams(srcUsername,socket);
             readMessage(socket);
-            openSockets.put(socket.getPort(), socket);
-
+            openSockets.put(srcUsername,socket);
+            this.listener.clientSocketAdded(srcUsername, socket);
+            Message message = new Message(username,"unknown","hello");
+            sendMessage(socket, message);
+            printOpenSockets();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    public void connectSocket(int port) {
 
-        if (!openSockets.containsKey(port)) {
-            try {
-                Socket socket = new Socket("localhost", port);
-                System.out.println(this.port+" : connectSocket : " + socket.getPort() + " : " + socket.getLocalPort());
-                readMessage(socket);
-                openSockets.put(port, socket);
-            } catch (IOException e) {
-                e.printStackTrace();
+
+    public void sendMessage(Socket socket, Message message) {
+
+        new Thread(new Runnable() {
+        
+            @Override
+            public void run() {
+                try {
+                    dout = new ObjectOutputStream(socket.getOutputStream());
+                    dout.writeObject(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        }).start();
+
     }
 
     private void readMessage(Socket socket) {
@@ -51,30 +76,30 @@ public class SocketHandler {
             @Override
             public void run() {
 
-                boolean connected = true;
-
+                boolean connected = false;
+                Message message;
                 try {
-                    DataInputStream din = new DataInputStream(socket.getInputStream());
-                    while (connected) {
-                        String message = din.readUTF();
-                        System.out.println(socket.getPort() + " : " + message);
+                    ObjectInputStream din = new ObjectInputStream(socket.getInputStream());
+                    while (true) {
+
+                        message = (Message) din.readObject();
+                        System.out.println(port+" : "+message.getData());
+                        if (!connected && message.getReceiver().equals("unknown")) {
+                            connected = true;
+                            openSockets.put(message.getSender(), socket);
+                            listener.clientSocketAdded(message.getSender(),socket);
+                            printOpenSockets();
+                        } else {
+
+                        }
                     }
-                } catch (IOException e) {
-                    connected = false;
+                } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
 
-    public void sendMessage(int port, String message) {
-        Socket socket = openSockets.get(port);
-        try {
-            new DataOutputStream(socket.getOutputStream()).writeUTF(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void startServer() {
 
@@ -87,8 +112,7 @@ public class SocketHandler {
                     serverSocket = new ServerSocket(port);
                     while (true) {
                         socket = serverSocket.accept();
-                        System.out.println(port+" : startServer : " + socket.getPort() + ": " + socket.getLocalPort());
-                        addSocket(socket);
+                        readMessage(socket);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -96,4 +120,13 @@ public class SocketHandler {
             }
         }).start();
     }
+
+
+    private void printOpenSockets(){
+        for(Map.Entry<String,Socket> mEntry : openSockets.entrySet()){
+            System.out.println(port+" : "+mEntry.getKey()+" : "+mEntry.getValue());
+        }
+    }
+
+
 }
