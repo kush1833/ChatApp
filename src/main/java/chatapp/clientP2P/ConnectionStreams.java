@@ -9,6 +9,7 @@ public class ConnectionStreams {
 
     private ObjectInputStream din;
     private ObjectOutputStream dout;
+    @SuppressWarnings("unused")
     private String username;
 
     ConnectionStreams(String username, Socket s) {

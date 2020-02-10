@@ -1,11 +1,11 @@
 package chatapp;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-
 
 import chatapp.clientP2P.OnCompleteListener;
 import chatapp.clientP2P.Peer;
-
 
 public class ClientP2PLauncher {
 
@@ -22,13 +22,20 @@ public class ClientP2PLauncher {
         Peer p3 = new Peer("kush", 3002);
         p3.listen();
 
-        
         p1.connectUser("kush").addOnCompleteListener(new OnCompleteListener() {
 
             @Override
             public void onComplete(Socket socket) {
-               p1.sendMessage("kush", "test-data");
-               p1.sendMessage("kush","data-2");
+                try {
+                    ObjectOutputStream dout = new ObjectOutputStream(socket.getOutputStream());
+                    
+                    p1.sendMessage("kush", "test", dout);
+                    p1.sendMessage("kush","test2", dout);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
             }
         });
 
