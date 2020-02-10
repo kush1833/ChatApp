@@ -47,3 +47,8 @@ task runClient(type: JavaExec){
     main = 'chatapp.ClientLauncher'
 }
 
+task runP2PClient(type: JavaExec){
+    classpath = sourceSets.main.runtimeClasspath
+    main = 'chatapp.ClientP2PLauncher'
+    standardInput = System.in
+}
