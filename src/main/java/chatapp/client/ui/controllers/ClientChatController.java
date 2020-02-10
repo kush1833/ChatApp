@@ -1,5 +1,6 @@
 package chatapp.client.ui.controllers;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -14,12 +15,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class ClientChatController implements Initializable {
 
 
     @FXML Label labelReceiverList;
     @FXML Button btnSendMessage;
+    @FXML Button btnSendFile;
     @FXML TextField textMessage;
     @FXML ListView<String> listView;
 
@@ -61,6 +65,16 @@ public class ClientChatController implements Initializable {
                listView.getItems().add(msg);
             }     
         });
+    }
+
+    public void sendFileHandler(MouseEvent event){
+        
+        Stage stage = new Stage();
+        stage.setTitle("File Chooser");
+        FileChooser fileChooser = new FileChooser();
+        stage.show();
+        File file = fileChooser.showOpenDialog(stage); 
+        System.out.println(file);
     }
 
     @Override
