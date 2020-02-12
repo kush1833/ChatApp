@@ -68,23 +68,7 @@ public class Peer implements ClientConnectionListener {
         printOpenSockets();
         TaskUserListener.clientSocketAdded(username, socket);
     }
-
-
-    public void sendMessage(String descUsername, String msg, ObjectOutputStream dout){
-
-        System.out.println(openSockets.containsKey(descUsername));
-        Message message = new Message(username, descUsername, msg);
-        socketHandler.sendMessage(dout, message);
-    }
-
     
-
-
-
-
-
-
-
 
     private void printOpenSockets(){
         for(Map.Entry<String,Socket> mEntry : openSockets.entrySet()){
@@ -93,7 +77,19 @@ public class Peer implements ClientConnectionListener {
     }
 
 
+    public void sendMessage(String descUsername, String msg){
+
+        Message message = new Message(username, descUsername, msg);
+        Socket s = openSockets.get(descUsername);
+        socketHandler.sendMessage(descUsername, s, message);
+
+    }
+
+
     public void listen() {
+
+
+        socketHandler.startServer();
 
         new Thread(new Runnable() {
 
@@ -181,8 +177,6 @@ public class Peer implements ClientConnectionListener {
 
 
     public TaskUserListener connectUser(String descUsername) {
-
-        socketHandler.startServer();
 
         System.out.println(descUsername+" : "+openSockets.containsKey(descUsername));
         if(openSockets.containsKey(descUsername))
