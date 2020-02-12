@@ -33,6 +33,7 @@ public class Peer implements ClientConnectionListener {
     protected Map<String, Socket> openSockets;
     private final SocketHandler socketHandler;
 
+    private MessageReceiveListener listener;
 
 
     public Peer(final String username, final int port) {
@@ -49,7 +50,7 @@ public class Peer implements ClientConnectionListener {
             System.out.println("Error : Unknown Host");
         }
         peersSet = new HashSet<>();
-        socketHandler = new SocketHandler(port);
+        socketHandler = new SocketHandler(this, port);
         socketHandler.addClientConnectionListener(this);
         openSockets = new HashMap<>();
     }
@@ -61,6 +62,13 @@ public class Peer implements ClientConnectionListener {
     }
 
 
+    public void addMessageReceiveListener(MessageReceiveListener listener){
+        this.listener = listener;
+    }
+
+    public void messageReceived(Message message){
+        this.listener.onMessageReceived(message.getData(), message.getSender());
+    }
 
     @Override
     public void clientSocketAdded(final String username, final Socket socket) {
@@ -84,6 +92,8 @@ public class Peer implements ClientConnectionListener {
         socketHandler.sendMessage(descUsername, s, message);
 
     }
+
+
 
 
     public void listen() {

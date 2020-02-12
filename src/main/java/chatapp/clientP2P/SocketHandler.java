@@ -20,9 +20,11 @@ public class SocketHandler {
     private Map<String, Socket> openSockets;
     private Map<String, ObjectOutputStream> doutStreams;
     private ClientConnectionListener listener;
+    private Peer context;
 
-    public SocketHandler(int port) {
+    public SocketHandler(Peer context , int port) {
         this.port = port;
+        this.context = context;
         this.openSockets = new HashMap<>();
         this.doutStreams = new HashMap<>();
     }
@@ -100,6 +102,8 @@ public class SocketHandler {
                             openSockets.put(message.getSender(), socket);
                             listener.clientSocketAdded(message.getSender(), socket);
                             // printOpenSockets();
+                        }else{
+                            context.messageReceived(message);
                         }
                     } while (continous);
                 } catch (IOException | ClassNotFoundException e) {
