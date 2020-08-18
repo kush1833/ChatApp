@@ -1,8 +1,8 @@
 # ChatApp
 
 ### Features
-	Server Client chat and File Sharing
-	Peer to Peer chat
+	A Client-Server architecture-based application to enable messaging and file sharing between two or more end-users. 
+        A Point-to-Point (P2P) technology-based application that enables the sharing of computer resources such as files between end-users. \item Clients communicate directly among        themselves and can act as both clients and a server.
 
 ### Requirement
 	Gradle installed on system.
